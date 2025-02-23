@@ -11,7 +11,10 @@ class FloatingHeart:
         self.root.attributes('-transparentcolor', 'gray10')
         self.root.attributes('-topmost', True)
 
-        self.canvas = tk.Canvas(root, width=800, height=800, bg='gray10', highlightthickness=0)
+        self.screen_width = self.root.winfo_screenwidth()
+        self.screen_height = self.root.winfo_screenheight()
+        
+        self.canvas = tk.Canvas(root, width=self.screen_width, height=self.screen_height, bg='gray10', highlightthickness=0)
         self.canvas.pack()
 
         self.angle = 0
@@ -36,7 +39,7 @@ class FloatingHeart:
             t = t / 100
             x = 16 * math.sin(t) ** 3
             y = -(13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t))
-            points.append((400 + x * 10 * scale, 400 + y * 10 * scale + y_offset))
+            points.append((self.screen_width // 2 + x * 10 * scale, self.screen_height // 2 + y * 10 * scale + y_offset))
 
         self.canvas.create_polygon(points, fill=color, outline="white", width=2, smooth=True, tags="heart")
 
@@ -93,7 +96,7 @@ class FloatingHeart:
 
     def spawn_heart_emojis(self, x, y):
         emojis = ['❤️', '💛', '💚', '💙', '💜', '🧡', '💖']
-        for _ in range(50):
+        for _ in range(100):
             size = random.randint(25, 50)
             angle = random.uniform(0, 2 * math.pi)
             speed = random.uniform(15, 30)
@@ -116,7 +119,7 @@ class FloatingHeart:
 
             self.canvas.coords(emoji_id, start_x, start_y)
 
-            if 0 <= start_x <= 800 and 0 <= start_y <= 800:
+            if 0 <= start_x <= self.screen_width and 0 <= start_y <= self.screen_height:
                 self.canvas.after(30, move_emoji)
             else:
                 self.canvas.delete(emoji_id)
@@ -125,6 +128,6 @@ class FloatingHeart:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.geometry("800x800+200+100")
+    root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")
     app = FloatingHeart(root)
     root.mainloop()
